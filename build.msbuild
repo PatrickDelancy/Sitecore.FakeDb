@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <Target Name="Tests" DependsOnTargets="Compile">
-    <xunit Assemblies="@(TestAssemblies)" ParallelizeTestCollections="false" />
+    <xunit Assemblies="@(TestAssemblies)" />
   </Target>
 
   <Target Name="Packages" DependsOnTargets="Tests">

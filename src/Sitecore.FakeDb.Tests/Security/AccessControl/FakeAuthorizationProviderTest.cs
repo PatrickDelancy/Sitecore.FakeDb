@@ -145,7 +145,7 @@
 
     public void Dispose()
     {
-      this.provider.LocalProvider.Value = null;
+      this.provider.Dispose();
     }
   }
 }
