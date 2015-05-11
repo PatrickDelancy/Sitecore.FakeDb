@@ -59,6 +59,7 @@
         var linkField = (LinkField)item.Fields["link"];
 
         // assert
+        linkField.Should().NotBeNull("'item.Fields[\"link\"]' should not be null");
         linkField.LinkType.Should().Be("internal");
         linkField.QueryString.Should().Be("sc_lang=en");
         linkField.TargetID.Should().Be(targetId);
@@ -75,10 +76,7 @@
                         {
                           new DbItem("home")
                             {
-                              new DbLinkField("link")
-                                {
-                                  TargetID = targetId,
-                                }
+                              new DbLinkField("link") { TargetID = targetId }
                             },
                           new DbItem("target", targetId)
                         })
@@ -89,6 +87,7 @@
         var linkField = (LinkField)item.Fields["link"];
 
         // assert
+        linkField.Should().NotBeNull("'item.Fields[\"link\"]' should not be null");
         linkField.TargetItem.Name.Should().Be("target");
       }
     }
@@ -103,11 +102,8 @@
                         {
                           new DbItem("home")
                             {
-                              new DbLinkField("link")
-                                {
-                                  LinkType = linkType,
-                                }
-                            },
+                              new DbLinkField("link") { LinkType = linkType }
+                            }
                         })
       {
         var item = db.GetItem("/sitecore/content/home");
@@ -116,6 +112,7 @@
         var linkField = (LinkField)item.Fields["link"];
 
         // assert
+        linkField.Should().NotBeNull("'item.Fields[\"link\"]' should not be null");
         linkField.IsInternal.Should().Be(isinternal);
       }
     }

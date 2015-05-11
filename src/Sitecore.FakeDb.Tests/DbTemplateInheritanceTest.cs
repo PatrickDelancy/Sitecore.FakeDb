@@ -1,27 +1,29 @@
 ﻿namespace Sitecore.FakeDb.Tests
 {
   using FluentAssertions;
+  using Ploeh.AutoFixture.Xunit2;
   using Sitecore.Data;
   using Sitecore.Data.Items;
   using Sitecore.Data.Managers;
   using Sitecore.Data.Templates;
   using Xunit;
-  using Xunit.Extensions;
 
   public class DbTemplateInheritanceTest
   {
-    private readonly DbTemplate _baseTemplateOne;
-    private readonly DbTemplate _baseTemplateThree;
-    private readonly DbTemplate _baseTemplateTwo;
+    private readonly DbTemplate baseTemplateOne;
+
+    private readonly DbTemplate baseTemplateThree;
+
+    private readonly DbTemplate baseTemplateTwo;
 
     public DbTemplateInheritanceTest()
     {
-      _baseTemplateOne = new DbTemplate("Base One", ID.NewID) {"Title"};
-      _baseTemplateTwo = new DbTemplate("Base Two", ID.NewID) {"Description"};
-      _baseTemplateThree = new DbTemplate("Base Three", ID.NewID)
-      {
-        BaseIDs = new[] { _baseTemplateTwo.ID }
-      };
+      this.baseTemplateOne = new DbTemplate("Base One", ID.NewID) { "Title" };
+      this.baseTemplateTwo = new DbTemplate("Base Two", ID.NewID) { "Description" };
+      this.baseTemplateThree = new DbTemplate("Base Three", ID.NewID)
+        {
+          BaseIDs = new[] { this.baseTemplateTwo.ID }
+        };
     }
 
     [Fact]
@@ -32,15 +34,15 @@
 
       using (var db = new Db
       {
-        _baseTemplateOne,
-        new DbTemplate("My Template", templateId) {BaseIDs = new[] {_baseTemplateOne.ID}},
+        this.baseTemplateOne,
+        new DbTemplate("My Template", templateId) {BaseIDs = new[] {this.baseTemplateOne.ID}},
         new DbItem("home", ID.NewID, templateId)
       })
       {
         // act
         Item home = db.GetItem("/sitecore/content/home");
         Template template = TemplateManager.GetTemplate(templateId, db.Database);
-        Template baseTemplate = TemplateManager.GetTemplate(_baseTemplateOne.ID, db.Database);
+        Template baseTemplate = TemplateManager.GetTemplate(this.baseTemplateOne.ID, db.Database);
 
         TemplateField titleField = baseTemplate.GetField("Title");
 
@@ -50,11 +52,11 @@
         template.GetFields(false).Should().NotContain(f => f.Name == "Title" || f.ID == titleField.ID);
         template.GetFields(true).Should().Contain(f => f.Name == "Title" && f.ID == titleField.ID);
 
-        template.GetField("Title").Should().NotBeNull();
-        template.GetField(titleField.ID).Should().NotBeNull();
+        template.GetField("Title").Should().NotBeNull("template.GetField(\"Title\")");
+        template.GetField(titleField.ID).Should().NotBeNull("template.GetField(titleField.ID)");
 
-        home.Fields["Title"].Should().NotBeNull();
-        home.Fields[titleField.ID].Should().NotBeNull();
+        home.Fields["Title"].Should().NotBeNull("home.Fields[\"Title\"]");
+        home.Fields[titleField.ID].Should().NotBeNull("home.Fields[titleField.ID]");
       }
     }
 
@@ -66,10 +68,10 @@
 
       using (var db = new Db
       {
-        _baseTemplateOne,
-        _baseTemplateTwo,
-        _baseTemplateThree,
-        new DbTemplate("Main Template", myTemplateId) {BaseIDs = new[] {_baseTemplateOne.ID, _baseTemplateThree.ID}},
+        this.baseTemplateOne,
+        this.baseTemplateTwo,
+        this.baseTemplateThree,
+        new DbTemplate("Main Template", myTemplateId) {BaseIDs = new[] {this.baseTemplateOne.ID, this.baseTemplateThree.ID}},
         new DbItem("home", ID.NewID, myTemplateId)
       })
       {
@@ -80,11 +82,11 @@
         // assert
 
         // note: as noted above, fields propagation should "just" work
-        home.Fields["Title"].Should().NotBeNull();
-        home.Fields["Description"].Should().NotBeNull();
+        home.Fields["Title"].Should().NotBeNull("home.Fields[\"Title\"]");
+        home.Fields["Description"].Should().NotBeNull("home.Fields[\"Description\"]");
 
-        template.GetField("Title").Should().NotBeNull();
-        template.GetField("Description").Should().NotBeNull();
+        template.GetField("Title").Should().NotBeNull("template.GetField(\"Title\")");
+        template.GetField("Description").Should().NotBeNull("template.GetField(\"Description\")");
       }
     }
 
@@ -96,12 +98,12 @@
 
       using (var db = new Db
       {
-        _baseTemplateOne,
-        _baseTemplateTwo,
-        _baseTemplateThree,
+        this.baseTemplateOne,
+        this.baseTemplateTwo,
+        this.baseTemplateThree,
         new DbTemplate("My Template", templateId)
         {
-          BaseIDs = new ID[] {_baseTemplateOne.ID, _baseTemplateThree.ID}
+          BaseIDs = new ID[] {this.baseTemplateOne.ID, this.baseTemplateThree.ID}
         },
         new DbItem("home", ID.NewID, templateId) {{"Title", "Home"}, {"Description", "My Home"}}
       })
@@ -112,6 +114,30 @@
         // assert
         home["Title"].Should().Be("Home");
         home["Description"].Should().Be("My Home");
+      }
+    }
+
+    [Theory, AutoData]
+    public void ShouldEditEmptyInheritedField(ID baseTemplateId, ID templateId, ID fieldId)
+    {
+      // arrange
+      using (var db = new Db
+                        {
+                          new DbTemplate("base", baseTemplateId) { new DbField(fieldId) },
+                          new DbTemplate("sample", templateId) { BaseIDs = new[] { baseTemplateId } },
+                          new DbItem("Home", ID.NewID, templateId)
+                        })
+      {
+        var item = db.GetItem("/sitecore/content/Home");
+
+        // act
+        using (new EditContext(item))
+        {
+          item.Fields[fieldId].Value = "new value";
+        }
+
+        // assert
+        item.Fields[fieldId].Value.Should().Be("new value");
       }
     }
   }

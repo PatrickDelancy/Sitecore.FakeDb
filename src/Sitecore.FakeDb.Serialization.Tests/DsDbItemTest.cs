@@ -24,7 +24,7 @@
       var item = new DsDbItem("/sitecore/content/home");
 
       item.Should().NotBeNull();
-      item.ID.ShouldBeEquivalentTo(ID.Parse("{110D559F-DEA5-42EA-9C1C-8A5DF7E70EF9}"));
+      item.ID.ShouldBeEquivalentTo(SerializationId.ContentHomeItem);
     }
 
     [Fact]
@@ -33,7 +33,7 @@
       var item = new DsDbItem("/sitecore/content/home");
 
       item.Should().NotBeNull();
-      item.TemplateID.ShouldBeEquivalentTo(ID.Parse("{76036F5E-CBCE-46D1-AF0A-4143F9B557AA}"));
+      item.TemplateID.ShouldBeEquivalentTo(SerializationId.SampleItemTemplate);
     }
 
     [Fact]
@@ -108,7 +108,7 @@
     [Fact]
     public void ShouldLookupById()
     {
-      var id = ID.Parse("{110D559F-DEA5-42EA-9C1C-8A5DF7E70EF9}");
+      var id = SerializationId.ContentHomeItem;
 
       var item = new DsDbItem(id);
 
@@ -123,7 +123,7 @@
       var item = new DsDbItem("/sitecore/content/home");
       using (var db = new Db { item })
       {
-        var templateId = ID.Parse("{76036F5E-CBCE-46D1-AF0A-4143F9B557AA}");
+        var templateId = SerializationId.SampleItemTemplate;
 
         item.Should().NotBeNull();
         item.TemplateID.ShouldBeEquivalentTo(templateId);
@@ -200,6 +200,24 @@
       item.Should().NotBeNull();
       item.Name.Should().BeEquivalentTo("still deeper");
       item.ID.ShouldBeEquivalentTo(id);
+    }
+
+    [Fact]
+    public void ShouldDeserializeItemBasedOnTwoTemplates()
+    {
+      // arrange
+      using (var db = new Db
+                        {
+                          new DsDbItem("/sitecore/content/New Composite Sample Item")
+                        })
+      {
+        // act
+        var item = db.GetItem("/sitecore/content/New Composite Sample Item");
+
+        // assert
+        item["Sample Field One"].Should().Be("Value One");
+        item["Sample Field Two"].Should().Be("Value Two");
+      }
     }
   }
 }

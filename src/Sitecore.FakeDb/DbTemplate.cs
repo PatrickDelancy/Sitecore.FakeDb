@@ -9,11 +9,24 @@
   {
     private ID[] baseIDs;
 
+    internal bool Generated { get; set; }
+
     public ID[] BaseIDs
     {
       get
       {
-        return this.baseIDs;
+        if (this.baseIDs != null || !this.Fields.ContainsKey(FieldIDs.BaseTemplate))
+        {
+          return this.baseIDs ?? Enumerable.Empty<ID>() as ID[];
+        }
+
+        var baseIds = this.Fields[FieldIDs.BaseTemplate].Value;
+        if (!string.IsNullOrEmpty(baseIds))
+        {
+          return baseIds.Split('|').Select(ID.Parse).ToArray();
+        }
+
+        return this.baseIDs ?? Enumerable.Empty<ID>() as ID[];
       }
 
       set
@@ -44,7 +57,6 @@
       : base(name, ID.IsNullOrEmpty(id) ? ID.NewID : id, TemplateIDs.Template)
     {
       this.StandardValues = new DbFieldCollection();
-      this.BaseIDs = Enumerable.Empty<ID>() as ID[];
     }
 
     public void Add(string fieldName)

@@ -27,7 +27,10 @@
         item.TemplateID = ID.NewID;
       }
 
-      var template = new DbTemplate(item.Name, item.TemplateID);
+      var template = new DbTemplate(item.Name, item.TemplateID)
+      {
+        Generated = true
+      };
 
       foreach (var itemField in item.Fields)
       {
@@ -59,7 +62,7 @@
         return true;
       }
 
-      if (dataStorage.FakeTemplates.ContainsKey(item.TemplateID))
+      if (dataStorage.GetFakeTemplate(item.TemplateID) != null)
       {
         return true;
       }
@@ -69,22 +72,16 @@
         return false;
       }
 
-      // find the most recently added sibling
-      var sourceItem = dataStorage.FakeItems.Values.LastOrDefault(si => si.ParentID == item.ParentID);
+      var fingerprint = string.Concat(item.Fields.Select(f => f.Name));
+
+      // find an item with a generated template that has a matching fields set
+      var sourceItem = dataStorage.FakeItems.Values
+        .Where(si => si.TemplateID != TemplateIDs.Template)
+        .Where(si => dataStorage.GetFakeTemplate(si.TemplateID) != null)
+        .Where(si => dataStorage.GetFakeTemplate(si.TemplateID).Generated)
+        .FirstOrDefault(si => string.Concat(si.Fields.Select(f => f.Name)) == fingerprint);
+
       if (sourceItem == null)
-      {
-        return false;
-      }
-
-      if (sourceItem.TemplateID == TemplateIDs.Template)
-      {
-        return false;
-      }
-
-      var lastItemTemplateKeys = string.Concat(sourceItem.Fields.Select(f => f.Name));
-      var itemTemplateKeys = string.Concat(item.Fields.Select(f => f.Name));
-
-      if (lastItemTemplateKeys != itemTemplateKeys)
       {
         return false;
       }
