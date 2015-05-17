@@ -36,16 +36,16 @@
     {
     }
 
-    private DsDbTemplate(FileInfo file, string serializationFolderName)
+    public DsDbTemplate(FileInfo file, string serializationFolderName)
       : this(serializationFolderName, file.Deserialize(), file)
     {
     }
 
-    private DsDbTemplate(string serializationFolderName, SyncItem syncItem, FileInfo file)
+    public DsDbTemplate(string serializationFolderName, SyncItem syncItem, FileInfo file)
       : base(syncItem.Name, ID.Parse(syncItem.ID))
     {
       Assert.IsTrue(
-        syncItem.TemplateID == TemplateIDs.Template.ToString(), 
+        syncItem.TemplateID == TemplateIDs.Template.ToString(),
         string.Format("File '{0}' is a correct item file, but does not represent a template; use DsDbItem instead to deserialize this", file.FullName));
 
       this.SerializationFolderName = serializationFolderName;
