@@ -52,6 +52,7 @@
       this.File = file;
       this.IncludeDescendants = includeDescendants;
       this.DeserializeLinkedTemplate = deserializeLinkedTemplate;
+      this.FullPath = syncItem.ItemPath;
     }
   }
 }

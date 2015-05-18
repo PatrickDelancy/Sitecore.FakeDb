@@ -29,9 +29,8 @@
       db.GetItem(Constants.CampaignsId).Should().NotBeNull();
     }
 
-
     [AutoDb]
-    [Theory(DisplayName = "All serialized system items are loaded and can be located by path", Skip = "To be implemented.")]
+    [Theory(DisplayName = "All serialized system items are loaded and can be located by path")]
     public void SystemItemsLoadedByPath(Db db)
     {
       db.GetItem("/sitecore/system/Marketing Control Panel/Campaigns").Should().NotBeNull();
@@ -58,10 +57,10 @@
     }
 
     [AutoDb(Path)]
-    [Theory(DisplayName = "System items are not loaded", Skip = "To be implemented.")]
+    [Theory(DisplayName = "System items are not loaded")]
     public void SystemItemsNotLoaded(Db db)
     {
-      db.GetItem("/sitecore/system").Children.Should().BeEmpty();
+      db.GetItem("/sitecore/system/Marketing Control Panel/Campaigns").Children.Should().BeEmpty();
     }
 
     [AutoDb(Path)]

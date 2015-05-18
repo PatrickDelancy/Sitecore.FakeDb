@@ -1270,5 +1270,19 @@
         TemplateManager.GetTemplate(this.templateId, db.Database).Should().NotBeNull();
       }
     }
+
+    [Fact]
+    public void ShouldCreateItemInSystemFolderUsingFullPath()
+    {
+      // arrange & act
+      using (var db = new Db
+                        {
+                          new DbItem("My System") { FullPath = "/sitecore/system/My System" }
+                        })
+      {
+        // assert
+        db.GetItem("/sitecore/system/My System").Should().NotBeNull();
+      }
+    }
   }
 }

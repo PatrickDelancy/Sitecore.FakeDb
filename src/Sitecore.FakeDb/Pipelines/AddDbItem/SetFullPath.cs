@@ -7,6 +7,11 @@
       var item = args.DbItem;
       var dataStorage = args.DataStorage;
 
+      if (!string.IsNullOrEmpty(item.FullPath))
+      {
+        return;
+      }
+
       if (item.ParentID == args.DefaultItemRoot)
       {
         item.FullPath = Constants.ContentPath + "/" + item.Name;
