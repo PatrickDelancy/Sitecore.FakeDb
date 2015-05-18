@@ -44,7 +44,7 @@
     {
     }
 
-    public DsDbItem(string serializationFolderName, SyncItem syncItem, FileInfo file, bool includeDescendants, bool deserializeLinkedTemplate = true)
+    internal DsDbItem(string serializationFolderName, SyncItem syncItem, FileInfo file, bool includeDescendants, bool deserializeLinkedTemplate = true)
       : base(syncItem.Name, ID.Parse(syncItem.ID), ID.Parse(syncItem.TemplateID))
     {
       this.SerializationFolderName = serializationFolderName;
@@ -53,6 +53,7 @@
       this.IncludeDescendants = includeDescendants;
       this.DeserializeLinkedTemplate = deserializeLinkedTemplate;
       this.FullPath = syncItem.ItemPath;
+      this.ParentID = new ID(syncItem.ParentID);
     }
   }
 }

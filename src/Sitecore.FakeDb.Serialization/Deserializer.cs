@@ -33,7 +33,7 @@
       return item;
     }
 
-    public static IEnumerable<KeyValuePair<SyncItem, FileInfo>> Deserialize(this DirectoryInfo folder, bool recursive)
+    internal static IEnumerable<KeyValuePair<SyncItem, FileInfo>> Deserialize(this DirectoryInfo folder, bool recursive)
     {
       Assert.ArgumentNotNull(folder, "folder");
 
@@ -210,7 +210,7 @@
       return itemLocation;
     }
 
-    public static DirectoryInfo GetSerializationFolder(string serializationFolderName)
+    internal static DirectoryInfo GetSerializationFolder(string serializationFolderName)
     {
       Assert.IsNotNullOrEmpty(serializationFolderName, "Please specify a serialization folder when you instantiate a FakeDb or individual DsDbItem/DsDbTemplate");
 

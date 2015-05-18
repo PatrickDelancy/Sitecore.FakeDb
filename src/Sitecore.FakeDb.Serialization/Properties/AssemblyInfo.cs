@@ -21,3 +21,5 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("05a1003e-7216-4a75-a024-d6fb6a833bb9")]
+
+[assembly: InternalsVisibleTo("Sitecore.FakeDb.AutoXunit")]

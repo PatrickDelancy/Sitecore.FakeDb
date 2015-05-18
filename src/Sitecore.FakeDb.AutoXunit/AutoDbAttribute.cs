@@ -10,26 +10,34 @@
 
   public class AutoDbAttribute : DataAttribute
   {
+    private readonly string path;
+
     public AutoDbAttribute()
     {
     }
 
     public AutoDbAttribute(string path)
     {
+      this.path = path;
     }
 
     public override IEnumerable<object[]> GetData(MethodInfo testMethod)
     {
       const string SerializationFolderName = "master";
 
-      var templates = LoadSerializedTemplates(SerializationFolderName);
-      var content = LoadSerializedItems(SerializationFolderName, "/sitecore/content");
-      var system = LoadSerializedItems(SerializationFolderName, "/sitecore/system");
-
       var db = new Db();
+
+      var templates = LoadSerializedTemplates(SerializationFolderName);
       Add(db, templates);
-      Add(db, content);
-      Add(db, system);
+
+      if (this.path != "/sitecore/templates")
+      {
+        var content = LoadSerializedItems(SerializationFolderName, "/sitecore/content");
+        Add(db, content);
+
+        var system = LoadSerializedItems(SerializationFolderName, "/sitecore/system");
+        Add(db, system);
+      }
 
       return new List<object[]> { new object[] { db } };
     }

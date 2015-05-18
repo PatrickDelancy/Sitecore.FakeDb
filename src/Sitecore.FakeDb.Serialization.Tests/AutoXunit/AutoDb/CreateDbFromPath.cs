@@ -50,7 +50,7 @@
     private const string Path = "/sitecore/templates";
 
     [AutoDb(Path)]
-    [Theory(DisplayName = "Content items are not loaded", Skip = "To be implemented.")]
+    [Theory(DisplayName = "Content items are not loaded")]
     public void ContentItemsNotLoaded(Db db)
     {
       db.GetItem("/sitecore/content").Children.Should().BeEmpty();
@@ -60,7 +60,7 @@
     [Theory(DisplayName = "System items are not loaded")]
     public void SystemItemsNotLoaded(Db db)
     {
-      db.GetItem("/sitecore/system/Marketing Control Panel/Campaigns").Children.Should().BeEmpty();
+      db.GetItem("/sitecore/system/Marketing Control Panel/Campaigns").Should().BeNull();
     }
 
     [AutoDb(Path)]

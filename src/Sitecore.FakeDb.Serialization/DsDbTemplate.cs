@@ -36,12 +36,12 @@
     {
     }
 
-    public DsDbTemplate(FileInfo file, string serializationFolderName)
+    internal DsDbTemplate(FileInfo file, string serializationFolderName)
       : this(serializationFolderName, file.Deserialize(), file)
     {
     }
 
-    public DsDbTemplate(string serializationFolderName, SyncItem syncItem, FileInfo file)
+    internal DsDbTemplate(string serializationFolderName, SyncItem syncItem, FileInfo file)
       : base(syncItem.Name, ID.Parse(syncItem.ID))
     {
       Assert.IsTrue(

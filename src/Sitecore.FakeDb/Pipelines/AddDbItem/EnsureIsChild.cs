@@ -7,9 +7,15 @@
       var item = args.DbItem;
       var dataStorage = args.DataStorage;
 
-      if (!dataStorage.GetFakeItem(item.ParentID).Children.Contains(item))
+      var parent = dataStorage.GetFakeItem(item.ParentID);
+      if (parent == null)
       {
-        dataStorage.GetFakeItem(item.ParentID).Children.Add(item);
+        return;
+      }
+
+      if (!parent.Children.Contains(item))
+      {
+        parent.Children.Add(item);
       }
     }
   }
