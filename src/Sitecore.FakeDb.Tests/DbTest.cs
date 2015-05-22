@@ -1284,5 +1284,22 @@
         db.GetItem("/sitecore/system/My System").Should().NotBeNull();
       }
     }
+
+    [Fact]
+    public void ShouldGetEmptyFieldValueForInvariantLanguage()
+    {
+      // arrange
+      using (var db = new Db
+                        {
+                          new DbItem("home") { { "Title", "Hello!" } }
+                        })
+      {
+        // act
+        var item = db.Database.GetItem("/sitecore/content/home", Language.Invariant);
+
+        // assert
+        item["Title"].Should().BeEmpty();
+      }
+    }
   }
 }
