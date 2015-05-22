@@ -84,8 +84,8 @@
     <Compile Include="..\Sitecore.FakeDb\Properties\AssemblyVersionInfo.cs">
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
-    <Compile Include="AutoXunit\AutoDbTest.cs" />
     <Compile Include="AutoXunit\AutoDb\CreateDbFromPath.cs" />
+    <Compile Include="AutoXunit\AutoDbSample.cs" />
     <Compile Include="Deserialize\DeserializeExistingTemplate.cs" />
     <Compile Include="Deserialize\DeserializeExistingItem.cs" />
     <Compile Include="Deserialize\DeserializeItemAndAddDuplicate.cs" />
