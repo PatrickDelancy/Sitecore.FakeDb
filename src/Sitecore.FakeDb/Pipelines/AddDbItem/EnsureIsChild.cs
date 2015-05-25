@@ -1,5 +1,8 @@
 ﻿namespace Sitecore.FakeDb.Pipelines.AddDbItem
 {
+  using Sitecore.Exceptions;
+  using Sitecore.StringExtensions;
+
   public class EnsureIsChild
   {
     public virtual void Process(AddDbItemArgs args)
@@ -7,15 +10,15 @@
       var item = args.DbItem;
       var dataStorage = args.DataStorage;
 
-      var parent = dataStorage.GetFakeItem(item.ParentID);
-      if (parent == null)
+      var parentItem = dataStorage.GetFakeItem(item.ParentID);
+      if (parentItem == null)
       {
-        return;
+        throw new ItemNotFoundException("The parent item \"{0}\" was not found.".FormatWith(item.ParentID), null);
       }
 
-      if (!parent.Children.Contains(item))
+      if (!parentItem.Children.Contains(item))
       {
-        parent.Children.Add(item);
+        parentItem.Children.Add(item);
       }
     }
   }
