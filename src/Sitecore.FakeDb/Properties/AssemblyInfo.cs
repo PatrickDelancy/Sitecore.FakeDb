@@ -23,3 +23,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("2b380318-fb94-40f1-aeb8-13a043c0cbda")]
 
 [assembly: InternalsVisibleTo("Sitecore.FakeDb.Tests")]
+[assembly: InternalsVisibleTo("Sitecore.FakeDb.Serialization.Tests")]

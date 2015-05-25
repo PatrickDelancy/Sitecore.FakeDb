@@ -232,5 +232,23 @@
         item["Sample Field Two"].Should().Be("Value Two");
       }
     }
+
+    [Theory]
+    [InlineData("/sitecore/content/Home/Some item", "/sitecore/content/Home")]
+    [InlineData("/sitecore/content/Folder Without Serialization/Item in Folder Without Serialization", "/sitecore/content/Folder Without Serialization")]
+    public void ShouldGenerateParentIfSrializationIsMissing(string itemPath, string parentPath)
+    {
+      // arrange & act
+      using (var db = new Db
+                        {
+                          new DsDbItem(itemPath)
+                        })
+      {
+        // assert
+        var parent = db.GetItem(parentPath);
+        parent.Should().NotBeNull();
+        parent.TemplateID.Should().Be(TemplateIDs.Folder);
+      }
+    }
   }
 }

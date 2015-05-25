@@ -71,30 +71,66 @@
     }
   }
 
-  [Trait("AutoDb", @"Load single item: [AutoDb(""/sitecore/content/Home/Child Item"")]")]
+  [Trait("AutoDb", @"Load a single item: [AutoDb(""/sitecore/content/Home/Child Item"")]")]
   public class LoadSingleItem
   {
     private const string Path = "/sitecore/content/Home/Child Item";
 
     [AutoDb(Path)]
-    [Theory(DisplayName = "The item is loaded")]
+    [Theory(DisplayName = "Item is loaded")]
     public void ItemLoaded(Db db)
     {
       db.GetItem(Path).Should().NotBeNull();
     }
 
     [AutoDb(Path)]
-    [Theory(DisplayName = "Children are not loaded", Skip = "To be implemented.")]
-    public void ChildrenNotLoaded(Db db)
+    [Theory(DisplayName = "[TBD]Child items are loaded")]
+    public void ChildItemsNotLoaded(Db db)
     {
-      db.GetItem(Path).Children.Should().BeEmpty();
+      // TODO: Decide if the child items should be loaded.
+      db.GetItem(Path).Children.Should().NotBeEmpty();
+    }
+
+    [AutoDb(Path)]
+    [Theory(DisplayName = "Parent is loaded")]
+    public void ParentGenerated(Db db)
+    {
+      db.GetItem(Path.GetParentPath()).TemplateID.Should().Be(SerializationId.SampleItemTemplate);
+    }
+
+    [AutoDb(Path)]
+    [Theory(DisplayName = "[TBD]System items are not loaded")]
+    public void SystemItemsNotLoaded(Db db)
+    {
+      // TODO: Decide if the System items should be loaded.
+      db.GetItem("/sitecore/system/Marketing Control Panel/Campaigns").Should().NotBeNull();
+    }
+
+    [AutoDb(Path)]
+    [Theory(DisplayName = "All templates are loaded")]
+    public void AllTemplatesLoaded(Db db)
+    {
+      db.Database.GetTemplate(Constants.SomeTemplateId).Should().NotBeNull();
+    }
+  }
+
+  [Trait("AutoDb", @"Load a single item if there is no parent serialization: [AutoDb(""/sitecore/content/Folder Without Serialization/Item in Folder Without Serialization"")]")]
+  public class LoadSingleItemWithoutParentSerialization
+  {
+    private const string Path = "/sitecore/content/Folder Without Serialization/Item in Folder Without Serialization";
+
+    [AutoDb(Path)]
+    [Theory(DisplayName = "Item is loaded")]
+    public void ItemLoaded(Db db)
+    {
+      db.GetItem(Path).Should().NotBeNull();
     }
 
     [AutoDb(Path)]
     [Theory(DisplayName = "Parent is not loaded but auto-generated")]
     public void ParentGenerated(Db db)
     {
-      db.GetItem(Path).Parent.Versions.Count.Should().Be(1);
+      db.GetItem(Path.GetParentPath()).TemplateID.Should().Be(TemplateIDs.Folder);
     }
 
     [AutoDb(Path)]

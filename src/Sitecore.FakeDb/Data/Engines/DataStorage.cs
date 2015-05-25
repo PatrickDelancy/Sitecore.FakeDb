@@ -79,6 +79,10 @@ namespace Sitecore.FakeDb.Data.Engines
       if (loading)
       {
         CorePipeline.Run("loadDsDbItem", new DsItemLoadingArgs(item as IDsDbItem, this));
+        if (!ID.IsNullOrEmpty(item.ParentID) && this.GetFakeItem(item.ParentID) == null)
+        {
+          this.GenerateParentItem(item);
+        }
       }
 
       CorePipeline.Run("addDbItem", new AddDbItemArgs(item, this));
@@ -343,6 +347,13 @@ namespace Sitecore.FakeDb.Data.Engines
 
       var message = string.Format(format, item.ID, item.FullPath ?? item.Name);
       throw new InvalidOperationException(message);
+    }
+
+    private void GenerateParentItem(DbItem item)
+    {
+      var parentName = item.FullPath.GetParentName();
+      var parent = new DbItem(parentName, item.ParentID, TemplateIDs.Folder);
+      this.AddFakeItem(parent);
     }
   }
 }

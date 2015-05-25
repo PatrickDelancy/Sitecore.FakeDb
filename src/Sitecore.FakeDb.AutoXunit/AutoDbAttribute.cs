@@ -65,7 +65,7 @@
 
     private static IEnumerable<DsDbItem> LoadSerializedItems(string serializationFolderName, string path)
     {
-      return GetSerializationInfo(serializationFolderName, path, false)
+      return GetSerializationInfo(serializationFolderName, path, true)
         .Where(si => si.Key.TemplateID != TemplateIDs.Template.ToString())
         .Select(si => new DsDbItem(serializationFolderName, si.Key, si.Value, true));
     }
